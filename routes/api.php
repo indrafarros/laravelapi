@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PostContoller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,4 +20,15 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('/posts', [PostContoller::class, 'index']);
+Route::post('/login', [AuthenticationController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/posts', [PostContoller::class, 'index']);
+    Route::get('/posts/{id}', [PostContoller::class, 'show']);
+    Route::get('/posts2/{id}', [PostContoller::class, 'show2']);
+    Route::post('/post', [PostContoller::class, 'store']);
+    Route::patch('/posts/{id}', [PostContoller::class, 'update'])->middleware('authorpost');
+    Route::delete('/posts/{id}', [PostContoller::class, 'destroy'])->middleware('authorpost');
+
+    Route::get('/logout', [AuthenticationController::class, 'logout']);
+});
